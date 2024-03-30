@@ -1,0 +1,51 @@
+{% comment %} {% extends "./base.html" %}
+
+{% block content %}
+
+  <section class="text-gray-400 bg-gray-900 body-font">
+    <div class="container px-5 py-24 mx-auto">
+        <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
+            <a class="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0">Create Project
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+      <div class="lg:w-2/3 w-full mx-auto overflow-auto">
+        <table class="table-auto w-full text-left whitespace-no-wrap">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800 rounded-tl rounded-bl">Project Title</th>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800">Date Created</th>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800">Status</th>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800">Assigned Engineer</th>
+              <th class="w-10 title-font tracking-wider font-medium text-white text-sm bg-gray-800 rounded-tr rounded-br"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                {% for ticket in tickets %}
+                <td><a href="{{ticket.get_absolute_url}}">{{ticket.title}}</a></td>
+                <td>{{ticket.date_created}}</td>
+                {% if ticket.ticket_status == 'Active' %}
+                <td><span class="badge bg-success">Active</td>
+                {% elif ticket.ticket_status == 'Pending' %}
+                <td><span class="badge bg-warning">Pending</td>
+                {% elif ticket.ticket_status == 'Completed' %}
+                <td><span class="badge bg-danger">Completed</td>
+                {% endif %}
+                {% if ticket.assigned_to %}
+                <td>Engineer {{ticket.assigned_to}}</td>
+                {% else %}  
+                <td>No Engineer Assigned Yet</td>
+                {% endif %}
+                <td><a href="{{ticket.get_absolute_url}}">View</a></td>
+                {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </section>
+
+
+{% endblock %} {% endcomment %}

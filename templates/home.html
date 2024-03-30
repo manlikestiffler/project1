@@ -1,0 +1,60 @@
+{% extends "./base.html" %}
+
+{% block content %}
+
+<section class="text-gray-400 bg-gray-900 body-font">
+    <div class="container px-5 py-24 mx-auto">
+      <div class="flex flex-col text-center w-full mb-20">
+        <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-white">Vetlam Solutions</h1>
+          <div class="form-outline" style="padding-left:380px;padding-top:30px" data-mdb-input-init>
+            <form class="header__search" method="GET" action="{% url 'project:home' %}">
+              {% csrf_token %}
+            <input type="text"  style="width:490px;" name="q" class="form-control" placeholder="Search Here..." aria-label="Search" />
+            </form>
+          </div>
+      </div>
+      <div class="lg:w-3/3 w-full mx-auto overflow-auto">
+        {% if not request.user.is_staff %}
+            <a href="{% url 'project:create-project' %}" class="text-indigo-400 inline-flex items-center md:mb-2 lg:mb-0">Create Project
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </a>
+        {% endif %}
+        <table class="table-auto w-full text-left whitespace-no-wrap">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800 rounded-tl rounded-bl">Project Title</th>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800 rounded-tl rounded-bl">Company</th>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800">Date Created</th>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800">Status</th>
+              <th class="px-4 py-3 title-font tracking-wider font-medium text-white text-sm bg-gray-800">Assigned Engineer</th>
+              <th class="w-10 title-font tracking-wider font-medium text-white text-sm bg-gray-800 rounded-tr rounded-br"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for project in projects %}
+            <tr>
+              <td class="px-4 py-3">{{project.title}}</td>
+              <td class="px-4 py-3"><a href="{% url 'project:home' %}?q={{project.company.name}}">{{project.company.name}}</a></td>
+              <td class="px-4 py-3">{{project.date_created}}</td>
+              {% if project.project_status == 'Active' %}
+              <td class="px-4 py-3"><span class="badge bg-success">Active</span></td>
+              {% elif project.project_status == 'Pending' %}
+              <td class="px-4 py-3 text-lg text-white"><span class="badge bg-warning">Pending</span></td>
+              {% elif project.project_status == 'Completed' %}
+              <td class="px-4 py-3 text-lg text-white"><span class="badge bg-danger">Completed</span></td>
+              {% endif %}
+              <td class="px-4 py-3">{{project.assigned_to}}</td>
+              <td class="w-10 text-center"><a href="{{project.get_absolute_url}}">View</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+</section>
+
+
+{% endblock %}

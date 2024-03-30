@@ -1,0 +1,251 @@
+{% extends "../../base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="text-gray-400 bg-gray-900 body-font overflow-hidden">
+  <div class="container px-5 py-24 mx-auto">
+    <div class="lg:w-4/5 mx-auto flex flex-wrap">
+      <div class="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
+        <h2 class="text-sm title-font text-gray-500 tracking-widest">{{project.company.name}}</h2>
+        <h1 class="text-white text-3xl title-font font-medium mb-4">{{project.title}}</h1>
+        <div class="flex mb-4">
+          <a class="flex-grow text-indigo-400 border-b-2 border-indigo-500 py-2 text-lg px-1">Overview</a>
+          <a href="{{project.company.get_absolute_url}}" class="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">Company</a>
+          {% if not request.user.is_staff %}
+          <a href="{% url 'project:update-project' project.id %}"  class="flex-grow border-b-2 border-gray-800 py-2 text-lg px-1">Update</a>
+          {% endif %}
+        </div>
+        <p class="leading-relaxed mb-4">{{project.description}}</p>
+        <div class="flex border-t border-gray-800 py-2">
+          <span class="text-gray-500">Accepted Date</span>
+          <span class="ml-auto text-white">{{project.accepted_date}}</span>
+        </div>
+        <div class="flex border-t border-gray-800 py-2">
+          <span class="text-gray-500">Created By</span>
+          <span class="ml-auto text-white">{{project.created_by}}</span>
+        </div>
+        <div class="flex border-t border-gray-800 py-2">
+          <span class="text-gray-500">Project Status</span>
+          <span class="ml-auto text-white">{{project.project_status}}</span>
+        </div>
+        <div class="flex border-t border-gray-800 py-2">
+          <span class="text-gray-500">Assigned Engineer</span>
+          {% if project.assigned_to %}
+          <span class="ml-auto text-white">{{project.assigned_to}}</span>
+          {% else %}
+          <span class="ml-auto text-white">Not Yet Assigned</span>
+          {% endif %}
+        </div>
+        <div class="flex border-t border-b mb-6 border-gray-800 py-2">
+          <span class="text-gray-500">Resolved?</span>
+          {% if project.is_resolved %}
+          <span class=" badge bg-success ml-auto text-white ">Yes</span>
+          {% else %}
+          <span class=" badge bg-danger ml-auto text-white ">Not Yet</span>
+          {% endif %}
+        </div>
+       
+        <div class="flex">
+          {% if request.user.is_staff and not project.is_resolved %}
+          <a href="{% url 'project:close-project' project.pk %}" class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Confirm Resolution</a>
+          <a href="{% url 'project:accept-project' project.pk %}" class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Accept Project</a>
+      {% endif %}  
+        </div>
+      </div>
+      <div class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded">
+        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-white">Chat Room</h1>
+          <div>
+              {% for message in project_messages %}
+              <div>
+                <small style="font-size:18px;color:red;">@{{message.user}}  <small style="padding-left:130px;font-size:15px;color:white">{{message.created|timesince}} ago</small></small>
+                <br>
+                <br>
+                <p style="font-family:monospace">{{message.body}}</p>
+                <hr>
+              </div>
+              {% endfor %}
+          </div>
+          <br>
+          <br>
+          <div>
+            <form method="POST" action="">
+              {% csrf_token %}
+              <input class="w-full bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" type="text" name="body" placeholder="Enter message here" />
+            </form>
+          </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+
+
+{% comment %} <div class="container">
+    <div class="row">
+      <div class="col">
+        <div class="card text-white bg-dark mb-3">
+            <h4 class="header">All Projects By this Company</h4>
+                {% for project in projects_per_user %}
+                <span class="sp">{{project.title}}<a href="{{project.get_absolute_url}}"><span class="sp1">View Project</span></a>
+                {% endfor %}
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card text-white bg-dark mb-3">
+        <span class = "sp">Project Title: <span class="sp1">{{project.title}}</span></span>
+        <br>
+            <span class="sp">Description: <span class="sp1">{{project.description}}</span></span>
+            <br>
+            <span class = "sp">Date Created:  <span class="sp1">{{project.date_created|timesince }} ago</span></span>
+            <br>
+            <span class = "sp">Accepted Date: <span class="sp1">{{project.accepted_date|timesince }} ago</span></span>
+            <br>
+            {% if project.is_resolved %}
+            <span class="sp">Resolved? : <span class="badge bg-success">Yes</span></span>
+            {% else %}
+             <span class="sp">Resolved? : <span class="badge bg-danger">Not Yet</span></span>
+            {% endif %}
+            <br>
+            <span class = "sp">Assigned to:  <span class="sp1">{{project.assigned_to}}</span></span>
+            <br>
+            <span class = "sp">Created By: <span class="sp1">{{project.created_by}}</span></span>
+            <br>
+            <span class = "sp">Project Status:   <span class="sp1-active">{{project.project_status}}</span></span>
+            <br>
+      </div>
+    </div>
+    <div class="b" style="padding-left:280px;">
+    {% if request.user.is_staff and not project.is_resolved %}
+    <a href="{% url 'project:close-project' project.pk %}" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" style="width:400px;" data-bs-toggle="modal" data-bs-targets="examspanleModal">Confirm Resolution</a>
+    {% endif %}
+
+    {% if request.user.is_authenticated and not project.is_resolved %}
+    <a href="{% url 'project:update-project' project.pk %}" class="btn btn-spanrimary">Update project</a>
+    {% endif %}
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to close the project?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <a href = "{% url 'project:close-project' project.pk %}" class="btn-btn-primary">Save </a>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+    </div>
+</div>  {% endcomment %}
+
+{% comment %} <style>
+    .row{
+        spanadding-left:60spanx;
+        spanadding-tospan:60spanx;
+    }
+    .you{
+        background-color:black;
+    }
+
+    .you1{
+        background-color:white;
+    }
+
+    .t1{
+        color:red;
+        font-size:15spanx;
+    }
+</style>
+
+<header class="header">
+    
+</header> {% endcomment %}
+
+{% comment %} <div class="row">
+    <div class="col-md-6 ">
+      <div class="card mx-auto you" style="width:30rem;">
+        {% comment %} <img class="img-fluid" alt="Resspanonsive image" src="{{ spanroduct.image.url }}"> {% endcomment %}
+        {% comment %} <div class="card-body">
+          <h5 class="card-title mb-3">  class="t1">project Title: <> <small>{{project.title}}</small></h5>
+          <span>  class="t1">project Number:<> <small> {{project.project_number}}</small></span>
+          <span class="card-text"> class="t1">Descrispantion<>{{project.descrispantion}}</span>
+
+        <div class="row">
+            <div class="col">
+                 class="t1">Date Created : <>{{project.date_created|timesince}} ago
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                {% if project.is_resolved %}
+                 class="t1">Resolved? : <>  class="badge bg-success">Yes<>
+                {% else %}
+                 class="t1">Resolved? : <>  class="badge bg-danger">Not Yet<>
+                {% endif %}
+            </div>
+            <div class="col">
+                 class="t1">Accespanted Date : <> <small> {{project.accespanted_date|timesince}}</small>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                 class="t1">Created By : <> <small> {{project.created_by}}</small>
+            </div>
+            <div class="col">
+                 class="t1">project Status : <> <small> {{project.project_status}}</small>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mx-auto you1" style="width:30rem;">
+            <div class="card-body">
+                <h5 class="card-title mb-3">All projects created by {{projects.created_by}}</h5>
+                {% for project in projects_spaner_user %}
+                <span class="card-text">{{project.project_number}}</span> <a href="{% url 'project:project-detail' project.spank %}">View project</a>
+                {% endfor %}
+
+            </div>
+        <div>
+    </div> {% endcomment %}
+{% comment %} </div> {% endcomment %}
+
+{% comment %} {% if request.user.is_staff and not project.is_resolved %}
+<a href="{% url 'project:close-project' project.spank %}" class="btn btn-danger" data-bs-toggle="modal" data-bs-targets="examspanleModal">Confirm Resolution</a>
+{% endif %}
+
+{% if request.user.is_authenticated and not project.is_resolved %}
+<a href="{% url 'project:uspandate-project' project.spank  %}" class="btn btn-spanrimary">Uspandate project</a>
+{% endif %}
+<div class = "modal fade" id="examspanleModal" tabindex="1" aria-labelledby="examspanleModalLabel" aria-hidden="True">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="examspanleModalLabel">Modal Title</h5>
+                <button tyspane="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+            </div>
+            <div class="modal-body">
+                Do you want to close the project
+            </div>
+            <div class="modal-footer">
+                <button tyspane="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="close">close</button>
+                <a href="{% url 'project:close-project' project.spank %}" class="btn btn-spanrimary">Save Changes</a>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+{% endblock %} 

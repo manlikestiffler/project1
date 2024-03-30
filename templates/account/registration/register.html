@@ -1,0 +1,42 @@
+{% extends "../../base.html" %}
+
+{% block content %}
+
+<form class="account-form p-4 rounded" action="." method="post">
+  {% csrf_token %}
+<section class="text-gray-400 bg-gray-900 body-font">
+    <div class="container px-5 py-24 mx-auto flex flex-wrap items-center">
+      <div class="lg:w-3/5 md:w-1/2 md:pr-16 lg:pr-0 pr-0">
+        <h1 class="title-font font-medium text-3xl text-white">Vetlam Solutions Project Management System</h1>
+        <p>Please Fill in all the details to create an account</p>
+      </div>
+      <div class="lg:w-2/6 md:w-1/2 bg-gray-800 bg-opacity-50 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
+        <h2 class="text-white text-lg font-medium title-font mb-5">Sign Up</h2>
+        <div class="relative mb-4">
+          <label for="full-name" class="leading-7 text-sm text-gray-400">{{ form.user_name.label }}</label>
+          {{ form.user_name}}
+        </div>
+        <div class="relative mb-4">
+          <label for="full-name" class="leading-7 text-sm text-gray-400">{{ form.email.label}}</label>
+          {{ form.email}}
+        </div>
+        <div class="relative mb-4">
+          <label for="full-name" class="leading-7 text-sm text-gray-400">{{ form.password.label}}</label>
+          {{ form.password}}
+        </div>
+        
+        <div class="relative mb-4">
+          <label for="full-name" class="leading-7 text-sm text-gray-400">{{ form.password2.label}}</label>
+          {{ form.password2}}
+        </div>
+        
+        <button class="btn btn-primary py-2 mb-4 mt-5 fw-bold" type="submit" value="Log-in">Register 
+        </button>
+   
+        <p class="text-xs mt-3"><a href="{% url "account:login" %}">Already Have An A ccount?</a></p>
+      </div>
+    </div>
+  </section>
+</form>
+
+{% endblock %}

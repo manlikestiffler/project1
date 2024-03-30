@@ -1,0 +1,74 @@
+{% extends '../../base.html' %}
+
+{% block content %}
+
+<form class="form" action="" method="POST">
+  {% csrf_token %}
+  <section class="text-gray-400 bg-gray-900 body-font relative">
+    <div class="container px-5 py-24 mx-auto">
+      <div class="flex flex-col text-center w-full mb-12">
+        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-white">Update Project</h1>
+      </div>
+      <div class="lg:w-1/2 md:w-2/3 mx-auto">
+        <div class="flex flex-wrap -m-2">
+          <div class="p-2 w-1/2">
+            <div class="relative">
+              <label for="email" class="w-full leading-7 text-sm text-gray-400">Project Title</label>
+              <input type="text"  name="title" value="{{project.title}}" class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            </div>
+          </div>
+          <div class="p-2 w-full">
+            <div class="relative">
+              <label for="message" class="leading-7 text-sm text-gray-400">Description</label>
+              <textarea  name="description" value="{{project.description}}" class="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:bg-gray-900 focus:ring-2 focus:ring-indigo-900 h-32 text-base outline-none text-gray-100 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
+            </div>
+          </div>
+          <div class="p-2 w-full">
+            <button type="submit" class="w-full flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>
+
+
+{% comment %} <form class="form" action="" method="POST">
+  {% csrf_token %}
+  <div class="card">
+  <div class="header">
+    Update Your Project
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+        <div class="main">
+          
+          <div class="input">
+            <span class="input_text" id="basic-addon1">Project Title</span>
+            <div class="input-title1">
+              <input type="required" class="input-title" value="{{project.title}}" name="title" list="topic-list">
+            </div>
+          </div>
+      
+          <div class="input">
+            <span class="input_text" id="basic-addon1">Description</span>
+            <div class="textbox">
+              <input type="textarea" class="input-t" value="{{project.description}}" name="description">
+            </div>
+          </div>
+          <div class="form__action" style="padding-top:30px;">
+            <a class="btn btn--dark" href="{% url 'project:home' %}" style="background-color:red;color:white">Cancel</a>
+            <button class="btn btn--main" type="submit" style="background-color:green;color:white">Submit</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+  
+  
+</div>
+</form> {% endcomment %}
+
+{% endblock %}
